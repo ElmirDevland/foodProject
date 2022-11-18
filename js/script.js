@@ -35,68 +35,104 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
   });
-});
 
-//Timer
+  //Timer
 
-const deadLine = '2022-11-21';
+  const deadLine = '2022-11-21';
 
-function getTimeRemaining(endTime) {
-  let DAYS, HOURS, MINUTES, SECONDS;
+  function getTimeRemaining(endTime) {
+    let DAYS, HOURS, MINUTES, SECONDS;
 
-  const t = Date.parse(endTime) - Date.parse(new Date());
+    const t = Date.parse(endTime) - Date.parse(new Date());
 
-  if (t <= 0) {
-    DAYS = 0;
-    HOURS = 0;
-    MINUTES = 0;
-    SECONDS = 0;
-  } else {
-    DAYS = Math.floor(t / (1000 * 60 * 60 * 24));
-    HOURS = Math.floor((t / (1000 * 60 * 60)) % 24);
-    MINUTES = Math.floor((t / 1000 / 60) % 60);
-    SECONDS = Math.floor((t / 1000) % 60);
+    if (t <= 0) {
+      DAYS = 0;
+      HOURS = 0;
+      MINUTES = 0;
+      SECONDS = 0;
+    } else {
+      DAYS = Math.floor(t / (1000 * 60 * 60 * 24));
+      HOURS = Math.floor((t / (1000 * 60 * 60)) % 24);
+      MINUTES = Math.floor((t / 1000 / 60) % 60);
+      SECONDS = Math.floor((t / 1000) % 60);
+    }
+
+    return {
+      t,
+      DAYS,
+      HOURS,
+      MINUTES,
+      SECONDS,
+    };
   }
 
-  return {
-    t,
-    DAYS,
-    HOURS,
-    MINUTES,
-    SECONDS,
-  };
-}
+  function getZero(num) {
+    if (num >= 0 && num < 10) {
+      return `0${num}`;
+    }
 
-function getZero(num) {
-  if (num >= 0 && num < 10) {
-    return `0${num}`;
+    return num;
   }
 
-  return num;
-}
+  function setClock(selector, endTime) {
+    const timer = document.querySelector(selector);
+    const days = timer.querySelector('#days');
+    const hours = timer.querySelector('#hours');
+    const minutes = timer.querySelector('#minutes');
+    const seconds = timer.querySelector('#seconds');
 
-function setClock(selector, endTime) {
-  const timer = document.querySelector(selector);
-  const days = timer.querySelector('#days');
-  const hours = timer.querySelector('#hours');
-  const minutes = timer.querySelector('#minutes');
-  const seconds = timer.querySelector('#seconds');
+    updateClock();
+    const timeInterval = setInterval(updateClock, 1000);
 
-  updateClock();
-  const timeInterval = setInterval(updateClock, 1000);
+    function updateClock() {
+      const t = getTimeRemaining(endTime);
 
-  function updateClock() {
-    const t = getTimeRemaining(endTime);
+      days.innerHTML = getZero(t.DAYS);
+      hours.innerHTML = getZero(t.HOURS);
+      minutes.innerHTML = getZero(t.MINUTES);
+      seconds.innerHTML = getZero(t.SECONDS);
 
-    days.innerHTML = getZero(t.DAYS);
-    hours.innerHTML = getZero(t.HOURS);
-    minutes.innerHTML = getZero(t.MINUTES);
-    seconds.innerHTML = getZero(t.SECONDS);
-
-    if (t.t <= 0) {
-      clearInterval(timeInterval);
+      if (t.t <= 0) {
+        clearInterval(timeInterval);
+      }
     }
   }
-}
 
-setClock('.timer', deadLine);
+  setClock('.timer', deadLine);
+
+  //Modal
+
+  const modal = document.querySelector('.modal');
+  const modalTrigger = document.querySelectorAll('[data-modal]');
+  const modalCloseBtn = document.querySelector('[data-close]');
+
+  function modalShow() {
+    modalTrigger.forEach((btns) => {
+      btns.addEventListener('click', () => {
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+      });
+    });
+  }
+
+  function closeModal() {
+    modal.classList.remove('show');
+    document.body.style.overflow = '';
+  }
+
+  modalShow();
+
+  modalCloseBtn.addEventListener('click', closeModal);
+
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      closeModal();
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (modal.classList.contains('show') && e.code == 'Escape') {
+      closeModal();
+    }
+  });
+});
