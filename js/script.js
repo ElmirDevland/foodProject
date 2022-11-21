@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   //Timer
 
-  const deadLine = '2022-11-21';
+  const deadLine = '2022-12-21';
 
   function getTimeRemaining(endTime) {
     let DAYS, HOURS, MINUTES, SECONDS;
@@ -107,12 +107,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const modalCloseBtn = document.querySelector('[data-close]');
 
   function modalShow() {
-    modalTrigger.forEach((btns) => {
-      btns.addEventListener('click', () => {
-        modal.classList.add('show');
-        document.body.style.overflow = 'hidden';
-      });
-    });
+    modal.classList.add('show');
+    document.body.style.overflow = 'hidden';
+    clearInterval(modalTimer);
   }
 
   function closeModal() {
@@ -120,7 +117,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.style.overflow = '';
   }
 
-  modalShow();
+  modalTrigger.forEach((btns) => {
+    btns.addEventListener('click', modalShow);
+  });
 
   modalCloseBtn.addEventListener('click', closeModal);
 
@@ -135,4 +134,18 @@ document.addEventListener('DOMContentLoaded', () => {
       closeModal();
     }
   });
+
+  const modalTimer = setTimeout(modalShow, 15000);
+
+  function showModalByScroll() {
+    if (
+      window.pageYOffset + document.documentElement.clientHeight >=
+      document.documentElement.scrollHeight
+    ) {
+      modalShow();
+      window.removeEventListener('scroll', showModalByScroll);
+    }
+  }
+
+  window.addEventListener('scroll', showModalByScroll);
 });
