@@ -151,16 +151,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   //Menu
 
-  const menuField = document.querySelector('.menu__field');
-  const menuContainer = menuField.querySelector('.container');
-
   class Menu {
-    constructor(img, alt, title, descr, price, parentSelector) {
+    constructor(img, alt, title, descr, price, parentSelector, ...classes) {
       this.img = img;
       this.alt = alt;
       this.title = title;
       this.descr = descr;
       this.price = price;
+      this.classes = classes;
       this.parent = document.querySelector(parentSelector);
       this.transfer = 36.94;
       this.changeToUAH();
@@ -173,8 +171,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     render() {
       const element = document.createElement('div');
+
+      if (this.classes.length === 0) {
+        this.element = 'menu__item';
+        element.classList.add(this.element);
+      } else {
+        this.classes.forEach((className) => element.classList.add(className));
+      }
+
       element.innerHTML = `
-      <div class="menu__item">
         <img src=${this.img} alt=${this.alt} />
         <h3 class="menu__item-subtitle">Меню "${this.title}"</h3>
         <div class="menu__item-descr">${this.descr}</div>
@@ -185,7 +190,6 @@ document.addEventListener('DOMContentLoaded', () => {
               this.price
             )}</span> грн/день</div>
         </div>
-      </div>
       `;
       this.parent.append(element);
     }
@@ -199,7 +203,8 @@ document.addEventListener('DOMContentLoaded', () => {
     свежих овощей и фруктов. Продукт активных и здоровых людей. Это
     абсолютно новый продукт с оптимальной ценой и высоким качеством!`,
     6.2,
-    '.menu .container'
+    '.menu .container',
+    'menu__item'
   );
 
   new Menu(
