@@ -229,4 +229,56 @@ document.addEventListener('DOMContentLoaded', () => {
     11.64,
     '.menu .container'
   );
+
+  // Forms
+
+  const forms = document.querySelectorAll('form');
+
+  const message = {
+    loading: 'Loading...',
+    success: 'Thank You!',
+    failure: 'Oops...',
+  };
+
+  forms.forEach((i) => postData(i));
+
+  function postData(form) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const statusMessage = document.createElement('div');
+      statusMessage.classList.add('status');
+      statusMessage.textContent = message.loading;
+      form.append(statusMessage);
+
+      const request = new XMLHttpRequest();
+      request.open('POST', 'server.php');
+
+      request.setRequestHeader('Content-type', 'application/json');
+      const formData = new FormData(form);
+
+      const object = {};
+      formData.forEach((value, key) => {
+        object[key] = value;
+      });
+
+      // request.send(formData);
+
+      const json = JSON.stringify(object);
+      request.send(json);
+
+      request.addEventListener('load', () => {
+        if (request.status === 200) {
+          console.log(request.response);
+          statusMessage.textContent = message.success;
+          form.reset();
+          setTimeout(() => {
+            statusMessage.remove();
+          }, 3000);
+        } else {
+          statusMessage.textContent = message.failure;
+        }
+      });
+    });
+  }
 });
