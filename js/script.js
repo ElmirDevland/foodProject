@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   //Timer
 
-  const deadLine = '2022-12-21';
+  const deadLine = '2023-12-21';
 
   function getTimeRemaining(endTime) {
     let DAYS, HOURS, MINUTES, SECONDS;
@@ -253,12 +253,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       form.insertAdjacentElement('afterend', statusMessage);
 
-      // form.append(statusMessage);
-
-      const request = new XMLHttpRequest();
-      request.open('POST', 'server.php');
-
-      request.setRequestHeader('Content-type', 'application/json');
       const formData = new FormData(form);
 
       const object = {};
@@ -266,22 +260,24 @@ document.addEventListener('DOMContentLoaded', () => {
         object[key] = value;
       });
 
-      // request.send(formData);
-
-      const json = JSON.stringify(object);
-      request.send(json);
-
-      request.addEventListener('load', () => {
-        if (request.status === 200) {
-          console.log(request.response);
+      fetch('serve1r.php', {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json',
+        },
+        body: JSON.stringify(object),
+      })
+        .then((data) => data.text())
+        .then((data) => {
+          console.log(data);
           showThanksModal(message.success);
-          form.reset();
           statusMessage.remove();
-        } else {
+        })
+        .catch(() => {
           showThanksModal(message.failure);
           statusMessage.remove();
-        }
-      });
+        })
+        .finally(() => form.reset());
     });
   }
 
@@ -296,11 +292,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     thanksDialog.classList.add('modal__dialog');
     thanksDialog.innerHTML = `
-    <div class="modal__content">
-      <div data-close class="modal__close">×</div>
-      <div class="modal__title">${message}</div>
-    </div>
-    `;
+        <div class="modal__content">
+          <div data-close class="modal__close">×</div>
+          <div class="modal__title">${message}</div>
+        </div>
+        `;
 
     document.querySelector('.modal').append(thanksDialog);
 
