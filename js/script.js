@@ -298,6 +298,15 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Slider
+  const slider = document.querySelector('.offer__slider');
+  slider.style.position = 'relative';
+
+  const indicators = document.createElement('ol');
+  indicators.classList.add('carousel-indicators');
+
+  slider.append(indicators);
+
+  const dots = [];
 
   const sliderWrapper = document.querySelector('.offer__slider-wrapper');
   const sliderField = document.querySelector('.offer__slider-inner');
@@ -314,11 +323,27 @@ document.addEventListener('DOMContentLoaded', () => {
   let slideNum = 1;
   let offset = 0;
 
+  for (let i = 0; i < slides.length; i++) {
+    const dot = document.createElement('li');
+    dot.setAttribute('data-slide-to', i + 1);
+    dot.classList.add('dot');
+
+    indicators.append(dot);
+    dots.push(dot);
+  }
+
   const listenCurrentSlide = () => {
     currentSlide.textContent = slideNum < 10 ? `0${slideNum}` : slideNum;
   };
 
   listenCurrentSlide();
+
+  const dotsOpacity = () => {
+    dots.forEach((dot) => (dot.style.opacity = 0.5));
+    dots[slideNum - 1].style.opacity = 1;
+  };
+
+  dotsOpacity();
 
   sliderWrapper.style.overflow = 'hidden';
 
@@ -335,7 +360,7 @@ document.addEventListener('DOMContentLoaded', () => {
   totalSlider.textContent =
     slides.length < 10 ? `0${slides.length}` : slides.length;
 
-  nextSlider.addEventListener('click', () => {
+  const switchNextSlider = () => {
     if (offset == +width.slice(0, width.length - 2) * (slides.length - 1)) {
       offset = 0;
     } else {
@@ -350,10 +375,11 @@ document.addEventListener('DOMContentLoaded', () => {
       slideNum++;
     }
 
+    dotsOpacity();
     listenCurrentSlide();
-  });
+  };
 
-  prevSlider.addEventListener('click', () => {
+  const switchPrevSlider = () => {
     if (offset == 0) {
       offset += +width.slice(0, width.length - 2) * (slides.length - 1);
     } else {
@@ -368,6 +394,24 @@ document.addEventListener('DOMContentLoaded', () => {
       slideNum--;
     }
 
+    dotsOpacity();
     listenCurrentSlide();
+  };
+
+  nextSlider.addEventListener('click', switchNextSlider);
+
+  prevSlider.addEventListener('click', switchPrevSlider);
+
+  dots.forEach((dot) => {
+    dot.addEventListener('click', (e) => {
+      const slideTo = e.target.getAttribute('data-slide-to');
+      slideNum = slideTo;
+      offset = +width.slice(0, width.length - 2) * (slideTo - 1);
+
+      sliderField.style.transform = `translateX(-${offset}px)`;
+
+      dotsOpacity();
+      listenCurrentSlide();
+    });
   });
 });
