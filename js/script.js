@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   //Timer
 
-  const deadLine = '2023-12-21';
+  const deadLine = '2024-01-01';
 
   function getTimeRemaining(endTime) {
     let DAYS, HOURS, MINUTES, SECONDS;
@@ -360,11 +360,15 @@ document.addEventListener('DOMContentLoaded', () => {
   totalSlider.textContent =
     slides.length < 10 ? `0${slides.length}` : slides.length;
 
+  function converToANumber(data) {
+    return +data.replace(/\D/g, '');
+  }
+
   const switchNextSlider = () => {
-    if (offset == +width.slice(0, width.length - 2) * (slides.length - 1)) {
+    if (offset == converToANumber(width) * (slides.length - 1)) {
       offset = 0;
     } else {
-      offset += +width.slice(0, 3);
+      offset += converToANumber(width);
     }
 
     sliderField.style.transform = `translateX(-${offset}px)`;
@@ -381,9 +385,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const switchPrevSlider = () => {
     if (offset == 0) {
-      offset += +width.slice(0, width.length - 2) * (slides.length - 1);
+      offset += converToANumber(width) * (slides.length - 1);
     } else {
-      offset -= +width.slice(0, 3);
+      offset -= converToANumber(width);
     }
 
     sliderField.style.transform = `translateX(-${offset}px)`;
@@ -406,7 +410,7 @@ document.addEventListener('DOMContentLoaded', () => {
     dot.addEventListener('click', (e) => {
       const slideTo = e.target.getAttribute('data-slide-to');
       slideNum = slideTo;
-      offset = +width.slice(0, width.length - 2) * (slideTo - 1);
+      offset = converToANumber(width) * (slideTo - 1);
 
       sliderField.style.transform = `translateX(-${offset}px)`;
 
