@@ -22,26 +22,5 @@
       "price": 21
     }
   ],
-  "requests": [
-    {
-      "name": "Elmir",
-      "phone": "66",
-      "id": 1
-    },
-    {
-      "name": "Ee",
-      "phone": "55",
-      "id": 2
-    },
-    {
-      "name": "EE",
-      "phone": "55",
-      "id": 3
-    },
-    {
-      "name": "EE",
-      "phone": "55",
-      "id": 4
-    }
-  ]
+  "requests": []
 }
